@@ -15,7 +15,8 @@ python -m venv venv
 venv\Scripts\activate   # On Windows
 source venv/bin/activate  # On macOS/Linux
 
+You need to set the database the database I used is MYSQL
+
 Install Dependencies
 pip install -r requirements.txt
 
-"# it_inventory" 
