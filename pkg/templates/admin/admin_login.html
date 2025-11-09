@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.css">
+  <title>Admin Login - Construction Inventory</title>
+  <style>
+    body { background-color: #fff; }
+    .btn-brand { background-color: #000; color: #fff; }
+    .btn-brand:hover { background-color: #222; color: #fff; }
+    .hero { padding: 50px 0; text-align: center; background-color: #C02000; color: #fff; }
+    .form-container { max-width: 400px; margin: 80px auto; }
+  </style>
+</head>
+<body>
+  {% include 'nav.html' %}
+
+  <div class="hero">
+    <h1>Admin Login</h1>
+    <p>Access the admin dashboard</p>
+  </div>
+
+  <div class="form-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ 'danger' if category=='error' else category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('admin_login') }}">
+      {{ admin.hidden_tag() }}
+      
+      <div class="mb-3">
+        {{ admin.username.label(class="form-label") }}
+        {{ admin.username(class="form-control") }}
+      </div>
+
+      <div class="mb-3">
+        {{ admin.password.label(class="form-label") }}
+        {{ admin.password(class="form-control") }}
+      </div>
+
+      <button type="submit" class="btn btn-brand w-100">Login</button>
+    </form>
+
+    <p class="mt-3 text-center">Forgot password? Contact support</p>
+  </div>
+</body>
+</html>

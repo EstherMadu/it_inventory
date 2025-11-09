@@ -1,0 +1,54 @@
+{% extends "admin/layout_admin.html" %}
+{% block title %}Admin - Asset History{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>History for: {{ asset.name }}</h3>
+  <div class="small-note">Serial: {{ asset.serial_number or '—' }}</div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="panel">
+      <h6>Status changes</h6>
+      <table class="table table-sm">
+        <thead class="table-dark"><tr><th>#</th><th>Status</th><th>Changed by</th><th>When</th><th>Note</th></tr></thead>
+        <tbody>
+          {% for h in history %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ h.status.value }}</td>
+              <td>{{ h.changed_by }}</td>
+              <td>{{ h.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+              <td>{{ h.note }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5" class="text-center">No status changes</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="panel">
+      <h6>Assignments</h6>
+      <table class="table table-sm">
+        <thead class="table-dark"><tr><th>#</th><th>Assigned to</th><th>Assigned at</th><th>Returned at</th></tr></thead>
+        <tbody>
+          {% for a in assignments %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ a.assigned_to }}</td>
+              <td>{{ a.assigned_at.strftime('%Y-%m-%d %H:%M') if a.assigned_at else '' }}</td>
+              <td>{{ a.returned_at.strftime('%Y-%m-%d %H:%M') if a.returned_at else '' }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="4" class="text-center">No assignments</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

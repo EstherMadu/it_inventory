@@ -1,0 +1,101 @@
+body {
+    background-color: #f8f9fa;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    height: 100vh;
+    background-color: #3b6064; /* Sidebar color */
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 25%;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    color: white;
+}
+
+.sidebar .nav-link.active {
+    background-color: #007bff; /* Active link color */
+    border-radius: 5px;
+}
+
+/* Content Styles */
+.content {
+    margin-left: 25%;  /* Adjusts for sidebar */
+    padding: 20px;
+}
+
+/* Table responsiveness */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; /* Makes the table scrollable horizontally */
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    /* Sidebar should be hidden or collapsed */
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        background-color: #3b6064; /* Sidebar color */
+    }
+
+    /* Content should take full width */
+    .content {
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    /* Adjust table width to be scrollable on smaller screens */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Table Styling */
+.table-striped {
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.table-bordered {
+    border: 1px solid #ddd;
+}
+
+.table-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Table Text Alignment */
+.text-center {
+    text-align: center;
+}
+
+.text-middle {
+    vertical-align: middle;
+}
+
+/* Alerts */
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+}
+
+/* Responsive Adjustment for Tables */
+@media (max-width: 768px) {
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+    }
+}

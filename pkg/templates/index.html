@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.css">
+  <title>Construction Inventory</title>
+  <style>
+    .btn-brand { background-color: #000; color: #fff; }
+    .btn-brand:hover { background-color: #222; color: #fff; }
+    .hero { min-height: 100vh; }
+  </style>
+</head>
+<body>
+  {% include "nav.html" %}
+
+  <main>
+    <section class="hero d-flex align-items-center bg-brand text-light">
+      <div class="container text-center py-5">
+        <h1 class="display-4 fw-bold text-dark">Inventory System</h1>
+        <p class="lead mb-4 text-dark">Track goods and supplies in the company efficiently</p>
+        <a href="/admin/" class="btn btn-brand btn-lg">Go to Dashboard</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/assets/bootstrap/js/bootstrap.bundle.js"></script>
+</body>
+</html>

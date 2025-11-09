@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.css" />
+    <title>Vendor Dashboard - Constructory Inventory</title>
+    <style>
+      body {
+        background-color: #fff;
+      }
+      .bg-brand {
+        background-color: #c02000;
+        color: #fff;
+      }
+      .sidebar {
+        height: 100vh;
+        background-color: #c02000;
+      }
+      .sidebar a {
+        color: #fff;
+        display: block;
+        padding: 15px;
+        text-decoration: none;
+      }
+      .sidebar a:hover {
+        background-color: #000;
+        color: #fff;
+      }
+      .btn-brand {
+        background-color: #000;
+        color: #fff;
+      }
+      .btn-brand:hover {
+        background-color: #222;
+        color: #fff;
+      }
+      .card-title {
+        font-size: 2rem;
+      }
+      .card-text {
+        font-size: 1.2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#C02000;">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">Construction Inventory</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+      aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link fw-bold text-light">Hello {{ vendor_name }}</a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-2 d-none d-md-block sidebar">
+          <h4 class="text-center text-light py-3">Vendor Menu</h4>
+          <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+          <a href="#" onclick="showSection('add-asset')">Add Asset</a>
+          <a href="#" onclick="showSection('my-assets')">My Assets</a>
+          <div class="text-center d-flex align-items-end text-light ">
+            <a href="/vendor-logout/">Logout</a>
+          </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-10 ms-sm-auto px-4 py-4">
+          <!-- Summary Cards -->
+          <div class="row mb-4" id="summary-cards">
+            <div class="col-md-6">
+              <div class="card text-white bg-brand mb-3">
+                <div class="card-body text-center">
+                  <h3 class="card-title" id="total-assets">{{quantity}}</h3>
+                  <p class="card-text">Total asset supplied</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card text-white bg-brand mb-3">
+                <div class="card-body text-center">
+                  <h3 class="card-title" id="total-categories">{{total}}</h3>
+                  <p class="card-text">Categories Supplied</p>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+
+          <!-- Dashboard Section -->
+          <div id="dashboard-section">
+            <h1 class="display-5 text-center">
+              Welcome to Your Vendor Dashboard
+            </h1>
+            <p class="text-center lead">
+              Use the sidebar to manage your assets and track your
+              contributions.
+            </p>
+          </div>
+
+          <!-- Add Asset Section -->
+          <div id="add-asset-section" style="display: none">
+            <h2>Add New Asset</h2>
+            <form method="POST" action="{{ url_for('vendor_addasset') }}" enctype="multipart/form-data">
+            
+              <div class="mb-3">
+                {{ form.name.label(class="form-label") }} {{
+                form.name(class="form-control") }}
+              </div>
+              <div class="mb-3">
+                {{ form.serial_number.label(class="form-label") }} {{
+                form.serial_number(class="form-control") }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.model_number.label(class="form-label") }} {{
+                form.model_number(class="form-control") }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.make.label(class="form-label") }} {{
+                form.make(class="form-control") }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.picture.label(class="form-label") }} {{
+                form.picture(class="form-control") }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.category_id.label(class="form-label") }} {{
+                form.category_id(class="form-select") }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.quantity.label(class="form-label") }} {{
+                form.quantity(class="form-select") }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.current_status.label(class="form-label") }} {{
+                form.current_status(class="form-select") }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.current_holder.label(class="form-label") }} {{
+                form.current_holder(class="form-control") }}
+              </div>
+
+              {{ form.submit(class="btn btn-brand") }}
+            </form>
+          </div>
+
+          <!-- My Assets Section -->
+          <div id="my-assets-section" style="display: none">
+            <h2>Assets Supplied</h2>
+            <table class="table table-striped table-bordered">
+              <thead class="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if vendeets %}
+                  {% for v, name in vendeets %}
+                    <tr scope="row">
+                      <td> {{ loop.index }}</td>
+                      <td>{{v.name}}</td>
+                      <td>{{name}}</td>
+                      <td> {{v.current_status}}</td>
+                      
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                        <tr>
+                          <td colspan="4" class="text-center">
+                            <div class="alert alert-info m-0">
+                              You have no asset yet....
+                            </div>
+                          </td>
+                        </tr>
+                      {% endif %}
+                    </tbody>
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script src="/static/assets/bootstrap/js/bootstrap.bundle.js"></script>
+    <script>
+      function showSection(section) {
+        document.getElementById("dashboard-section").style.display = "none";
+        document.getElementById("add-asset-section").style.display = "none";
+        document.getElementById("my-assets-section").style.display = "none";
+
+        if (section === "dashboard")
+          document.getElementById("dashboard-section").style.display = "block";
+        if (section === "add-asset")
+          document.getElementById("add-asset-section").style.display = "block";
+        if (section === "my-assets")
+          document.getElementById("my-assets-section").style.display = "block";
+      }
+    </script>
+  </body>
+</html>

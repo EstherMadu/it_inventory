@@ -1,0 +1,39 @@
+{% extends 'admin/layout_admin.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Assets Supplied by {{ vendor.name }}</h3>
+    <p><strong>Total Quantity:</strong> {{ total_quantity }}</p>
+    <hr>
+
+    {% if vendor_assets %}
+    <div class="row">
+        {% for asset, category_name in vendor_assets %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if asset.picture %}
+                <img src="{{ url_for('static', filename='uploaded/' ~ asset.picture) }}"
+                     class="card-img-top" alt="{{ asset.name }}" style="height:200px; object-fit:cover;">
+            
+                {% else %}
+                <img src="{{ url_for('static', filename='images/no_image.png') }}"
+                     class="card-img-top" alt="No Image" style="height:200px; object-fit:cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ asset.name }}</h5>
+                    <p class="card-text">
+                        <strong>Category:</strong> {{ category_name }} <br>
+                        <strong>Quantity:</strong> {{ asset.quantity }} <br>
+                        <strong>Model:</strong> {{ asset.model_number or 'N/A' }} <br>
+                        <strong>Serial:</strong> {{ asset.serial_number or 'N/A' }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No assets supplied by this vendor yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

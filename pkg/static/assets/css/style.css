@@ -1,0 +1,152 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h4 {
+  color: #6f4f0f;
+}
+
+.nav-logo {
+  width: 140px;
+  transform: translateX(-5px);
+}
+
+.nav-item {
+  font-size: 14px !important;
+}
+
+.card {
+  border: 1px solid rgba(0, 0, 0, .1);
+  box-shadow: 0 6px 6px -5px rgba(0, 0, 0, 0.1);
+}
+
+.card > img,
+.card-body > img {
+  border-radius: 10px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.card-padding {
+  padding: 2rem;
+}
+
+.container {
+  max-width: 1100px;
+}
+
+.section {
+  padding: 6rem 0;
+}
+
+.cta_btn {
+  background-color: #6f4f0f;
+  color: azure;
+}
+
+/* .btn-buy:hover {
+  background-color: #218838;
+} */
+.nav-body,
+footer,
+.farm-bg,
+.rest-bg {
+  background-color: #3b6064;
+  color: white;
+}
+
+.hero-img {
+  background-image: url("../images/vegetables.jpg");
+  background-color: ghostwhite;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.hero-img .inner {
+  padding: 12rem 0;
+}
+
+.design {
+  background-image: url("../images/design.png");
+  background-color: ghostwhite;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 4rem 0;
+  border-radius: 50px;
+}
+/* Ensure images fit within their container without stretching */
+.card-img-top {
+  object-fit: cover;
+  max-height: 200px; /* Adjust based on your card's design */
+  width: 100%; /* Ensures it fills the card width without overflow */
+}
+
+.inner {
+  background-color: rgba(0, 0, 0, 0.6);
+  height: inherit;
+}
+
+.analytics {
+  margin-top: -35px;
+}
+
+i {
+  font-size: 30px;
+}
+
+.ver-border,
+.ver1-border,
+.ver2-border {
+  width: 2px; /* Line thickness */
+  min-height: 100px; /* Line length */
+  background-color: #877d7d; /* Line color */
+}
+
+.blue {
+  border-left-color: blue;
+}
+
+.green {
+  background-color: green !important;
+  width: 5px;
+}
+
+.reviews {
+  background-color: #a47e33;
+  color: white;
+}
+
+/* .reviews img {
+  height: 20%;
+} */
+
+.slanted-border {
+  background-color: rgb(104, 96, 96); /* Adjust the background color */
+  clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+}
+
+/* Remove the slanted effect on smaller screens */
+@media (max-width: 768px) {
+  /* Adjust breakpoint as needed */
+  .slanted-border {
+    clip-path: none;
+  }
+}
+
+footer {
+  margin-top: auto;
+}
+
+footer li {
+  list-style-type: none;
+}

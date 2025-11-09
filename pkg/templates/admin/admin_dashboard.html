@@ -1,0 +1,98 @@
+{% extends "admin/layout_admin.html" %}
+{% block title %}Admin - Dashboard{% endblock %}
+
+{% block head_extra %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Dashboard</h2>
+  <div class="small-note">Detailed inventory view</div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card card-industrial p-3">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="small-note">Total Vendors</div>
+          <div class="stat-num">{{ total_vendors }}</div>
+        </div>
+        <i class="bi bi-people" style="font-size:28px;color:var(--brand)"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card card-industrial p-3">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="small-note">Total Assets</div>
+          <div class="stat-num">{{ total_assets }}</div>
+        </div>
+        <i class="bi bi-box-seam" style="font-size:28px;color:var(--brand)"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card panel p-3">
+      <div class="d-flex justify-content-between">
+        <div>
+          <div class="small-note">Status distribution</div>
+          <h5 class="mb-0">Assets by status</h5>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <canvas id="statusChart" width="400" height="240"></canvas>
+        </div>
+        <div class="col-md-6">
+          <ul class="list-unstyled">
+            <li><strong>{{ status_counts.inventory }}</strong> inventory</li>
+            <li><strong>{{ status_counts.assigned }}</strong> assigned</li>
+            <li><strong>{{ status_counts.repair }}</strong> repair</li>
+            <li><strong>{{ status_counts.retired }}</strong> retired</li>
+          </ul>
+          <div class="small-note mt-2">Tip: Use the Assets page to change statuses or review history.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4">
+  <h5>Latest assets</h5>
+  <div class="row g-3">
+    {% for asset, vendor_name, category_name in latest_assets %}
+      <div class="col-md-4">
+        <div class="card panel">
+          <div class="d-flex gap-3">
+            <div>
+              {% if asset.picture %}
+                <img src="{{ url_for('static', filename='uploaded/' ~ asset.picture) }}" class="thumb" alt="">
+              {% else %}
+                <div class="thumb" style="background:#eee;display:flex;align-items:center;justify-content:center;color:#999">No image</div>
+              {% endif %}
+            </div>
+            <div>
+              <h6 class="mb-1">{{ asset.name }}</h6>
+              <div class="small-note">{{ category_name or 'Uncategorized' }} • {{ vendor_name or 'Unknown vendor' }}</div>
+              <div class="mt-2"><small class="muted">Status: </small><strong>{{ asset.current_status.value }}</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-12"><div class="panel">No assets yet.</div></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+
+{% endblock %}

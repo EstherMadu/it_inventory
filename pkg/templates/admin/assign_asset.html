@@ -1,0 +1,36 @@
+{% extends "admin/layout_admin.html" %}
+{% block title %}Assign Asset{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Assign Asset</h3>
+  <a href="{{ url_for('admin_view_assignments') }}" class="btn btn-secondary btn-sm">← Back</a>
+</div>
+
+<div class="panel p-4">
+  <h5 class="mb-3">Asset: {{ asset.name }}</h5>
+  <p><strong>Serial:</strong> {{ asset.serial_number }}</p>
+  <p><strong>Status:</strong> {{ asset.current_status.value|capitalize }}</p>
+  {% if asset.picture %}
+    <img src="{{ url_for('static', filename='uploaded/' ~ asset.picture) }}" 
+         alt="{{ asset.name }}" class="img-thumbnail mb-3" style="max-width: 200px;">
+  {% endif %}
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.assigned_to.label(class="form-label") }}
+      {{ form.assigned_to(class="form-control", placeholder="Name or department") }}
+    </div>
+    <div class="mb-3">
+      {{ form.assigned_by.label(class="form-label") }}
+      {{ form.assigned_by(class="form-control", placeholder="Optional") }}
+    </div>
+    <div class="mb-3">
+      {{ form.note.label(class="form-label") }}
+      {{ form.note(class="form-control", rows="3", placeholder="Optional note") }}
+    </div>
+    <button type="submit" class="btn btn-dark">{{ form.submit.label.text }}</button>
+  </form>
+</div>
+{% endblock %}

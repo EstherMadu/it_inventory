@@ -1,0 +1,110 @@
+{% extends "admin/layout_admin.html" %}
+{% block title %}Admin - Assets{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Assets</h3>
+  <div class="small-note">Upload, update status, and view history</div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-10">
+    <div class="panel">
+      <h5>All Assets</h5>
+      <table class="table align-middle">
+        <thead class="table-dark"><tr><th>#</th><th></th><th>Name</th><th>Category</th><th>Vendor</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for asset, vendor_name, category_name in assets %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>
+                {% if asset.picture %}
+                  <img src="{{ url_for('static', filename='uploaded/' ~ asset.picture) }}" class="thumb" alt="thumb">
+                {% else %}
+                  <div class="thumb" style="background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#999">—</div>
+                {% endif %}
+              </td>
+              <td>{{ asset.name }}<div class="small-note">S/N: {{ asset.serial_number or '—' }}</div></td>
+              <td>{{ category_name or '—' }}</td>
+              <td>{{ vendor_name or '—' }}</td>
+              <td>
+                <span class="badge bg-secondary">{{ asset.current_status.value }}</span>
+              </td>
+              <td style="min-width:220px;">
+                <form method="POST" action="{{ url_for('admin_change_asset_status', asset_id=asset.id) }}" style="display:flex;flex-direction:column;gap:6px;">
+                  <select name="status" class="form-select form-select-sm">
+                    {% for s in ['INVENTORY','ASSIGNED','REPAIR','RETIRED'] %}
+                      <option value="{{ s }}" {% if asset.current_status.name == s %}selected{% endif %}>{{ s.lower() }}</option>
+                    {% endfor %}
+                  </select>
+                  <input type="text" name="note" class="form-control form-control-sm" placeholder="note (optional)">
+                  <div class="d-flex gap-2">
+                  
+                    <a href="{{ url_for('admin_assigning_asset', asset_id=asset.id) }}" class="btn btn-sm btn-dark">Assign</a>
+
+
+                    <button class="btn btn-sm btn-primary" type="submit">Update</button>
+                    <form method="POST" action="{{ url_for('admin_delete_asset', asset_id=asset.id) }}" style="display:inline;">
+                      <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                    </form>
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin_view_status_history', asset_id=asset.id) }}">History</a>
+                  </div>
+                </form>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="7" class="text-center">No assets yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="row g-3 d-flex align-items-center justify-content-between">
+    <div class="col-md-6">
+    <div class="panel">
+      <h5>Add Asset</h5>
+      <form method="POST" action="{{ url_for('admin_add_asset') }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="mb-2">{{ form.name.label }} {{ form.name(class="form-control") }}</div>
+        <div class="mb-2">{{ form.serial_number.label }} {{ form.serial_number(class="form-control") }}</div>
+        <div class="mb-2">{{ form.model_number.label }} {{ form.model_number(class="form-control") }}</div>
+        <div class="mb-2">{{ form.make.label }} {{ form.make(class="form-control") }}</div>
+        <div class="mb-2">
+          {{ form.picture.label }} 
+          {{ form.picture(class="form-control", onchange="previewImage(event)") }}
+          <div class="mt-2">
+            <img id="preview" class="img-preview" src="#" alt="preview" style="display:none;">
+          </div>
+        </div>
+        <div class="mb-2">{{ form.category_id.label }} {{ form.category_id(class="form-select") }}</div>
+        <div class="mb-2">{{ form.vendor_id.label }} {{ form.vendor_id(class="form-select") }}</div>
+        <div class="mb-2">{{ form.quantity.label }} {{ form.quantity(class="form-control") }}</div>
+        <div class="mb-2">{{ form.current_status.label }} {{ form.current_status(class="form-select") }}</div>
+        <div class="mb-2">{{ form.current_holder.label }} {{ form.current_holder(class="form-control") }}</div>
+        {{ form.submit(class="btn btn-dark") }}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function previewImage(event) {
+    const input = event.target;
+    const preview = document.getElementById('preview');
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      preview.src = '#';
+      preview.style.display = 'none';
+    }
+  }
+</script>
+{% endblock %}

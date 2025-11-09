@@ -1,0 +1,74 @@
+{% extends "admin/layout_admin.html" %}
+{% block title %}Admin - Vendors{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Vendors</h3>
+  <div class="small-note">Add or manage vendors</div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="panel">
+      <h5 class="mb-3">Add Vendor</h5>
+      <form method="POST" action="{{ url_for('admin_add_vendor') }}">
+        {{ form.hidden_tag() }}
+        <div class="mb-2">
+          {{ form.vendor_name.label(class="form-label") }}
+          {{ form.vendor_name(class="form-control") }}
+        </div>
+        <div class="mb-2">
+          {{ form.vendor_email.label(class="form-label") }}
+          {{ form.vendor_email(class="form-control") }}
+        </div>
+        <div class="mb-2">
+          {{ form.vendor_password.label(class="form-label") }}
+          {{ form.vendor_password(class="form-control") }}
+        </div>
+        <div class="mb-2">
+          {{ form.vendor_confirm_password.label(class="form-label") }}
+          {{ form.vendor_confirm_password(class="form-control") }}
+        </div>
+        {{ form.submit(class="btn btn-dark") }}
+      </form>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="panel">
+      <h5 class="mb-3">All vendors</h5>
+      <table class="table table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Registered</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in vendors %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ v.vendor_name }}</td>
+              <td>{{ v.vendor_email }}</td>
+              <td>{{ v.date_registered.strftime('%Y-%m-%d') if v.date_registered else '' }}</td>
+              <td>
+                <form method="GET" action="{{ url_for('view_vendor_assets', vendor_id=v.id) }}" style="display:inline;">
+                  <button class="btn btn-sm btn-primary" type="submit">View Assets</button>
+                </form>
+                <form method="POST" action="{{ url_for('admin_delete_vendor', vendor_id=v.id) }}" style="display:inline;">
+                  <button class="btn btn-sm btn-danger" type="submit">Delete Vendor</button>
+                </form>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5" class="text-center">No vendors found</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

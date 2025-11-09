@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.css">
+  <title>Admin Signup - Construction Inventory</title>
+  <style>
+    body { background-color: #fff; }
+    .btn-brand { background-color: #000; color: #fff; }
+    .btn-brand:hover { background-color: #222; color: #fff; }
+    .hero { padding: 50px 0; text-align: center; background-color: #C02000; color: #fff; }
+    .form-container { max-width: 400px; margin: 80px auto; }
+  </style>
+</head>
+<body>
+    {% include 'nav.html' %}
+
+  <div class="hero">
+    <h1>Admin Signup</h1>
+    <p>Access the admin dashboard</p>
+  </div>
+    {% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <h3 class="mb-4 text-center">Admin Signup</h3>
+
+     {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ 'danger' if category=='error' else category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.username.label(class="form-label") }}
+            {{ form.username(class="form-control", placeholder="Enter email") }}
+            {% for error in form.username.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control", placeholder="Enter password") }}
+            {% for error in form.password.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.confirm_password.label(class="form-label") }}
+            {{ form.confirm_password(class="form-control", placeholder="Confirm password") }}
+            {% for error in form.confirm_password.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.department.label(class="form-label") }}
+            {{ form.department(class="form-select") }}
+            {% for error in form.department.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="d-grid">
+            {{ form.submit(class="btn btn-dark") }}
+        </div>
+        <p>Already have an account? <a href="/admin_login/">Login</a></p>
+    </form>
+</div>
+{% endblock %}
+</body>
+</html>
