@@ -108,6 +108,8 @@ def admin_manage_vendors():
     form = VendorSignupForm()
     return render_template("admin/manage_vendors.html", vendors=vendors, form=form)
 
+
+
 @app.route("/admin/vendors/add/", methods=["POST"])
 @admin_required
 def admin_add_vendor():
@@ -146,53 +148,108 @@ def admin_delete_vendor(vendor_id):
     return redirect(url_for("admin_manage_vendors"))
 
 # ---------- ASSETS ----------
+# @app.route("/admin/assets/")
+# @admin_required
+# def admin_manage_assets():
+#     assets = db.session.query(Asset, Vendor.vendor_name, AssetCategory.name.label("category_name"))\
+#         .join(Vendor, Vendor.id == Asset.vendor_id, isouter=True)\
+#         .join(AssetCategory, AssetCategory.id == Asset.category_id, isouter=True)\
+#         .order_by(Asset.created_at.desc()).all()
+#     form = AssetForm()
+#     form.populate_categories()
+#     return render_template("admin/manage_assets.html", assets=assets, form=form)
+
 @app.route("/admin/assets/")
 @admin_required
 def admin_manage_assets():
-    assets = db.session.query(Asset, Vendor.vendor_name, AssetCategory.name.label("category_name"))\
-        .join(Vendor, Vendor.id == Asset.vendor_id, isouter=True)\
-        .join(AssetCategory, AssetCategory.id == Asset.category_id, isouter=True)\
-        .order_by(Asset.created_at.desc()).all()
+    # query params
+    category_filter = request.args.get('category', type=int)
+    vendor_filter = request.args.get('vendor', type=int)
+    status_filter = request.args.get('status')  # expects 'INVENTORY', 'ASSIGNED', ...
+
+    # base query selecting Asset + vendor name + category name
+    query = db.session.query(Asset, Vendor.vendor_name, AssetCategory.name.label("category_name"))\
+        .outerjoin(Vendor, Asset.vendor_id == Vendor.id)\
+        .outerjoin(AssetCategory, Asset.category_id == AssetCategory.id)
+
+    # apply filters
+    if category_filter:
+        query = query.filter(Asset.category_id == category_filter)
+    if vendor_filter:
+        query = query.filter(Asset.vendor_id == vendor_filter)
+    if status_filter:
+        try:
+            query = query.filter(Asset.current_status == AssetStatus[status_filter])
+        except KeyError:
+            pass
+
+    assets = query.order_by(Asset.created_at.desc()).all()
+
+    # form for the add asset panel
     form = AssetForm()
     form.populate_categories()
-    return render_template("admin/manage_assets.html", assets=assets, form=form)
+
+    # lists for the filter dropdowns
+    categories = AssetCategory.query.order_by(AssetCategory.name).all()
+    vendors = Vendor.query.order_by(Vendor.vendor_name).all()
+
+    return render_template(
+        "admin/manage_assets.html",  
+        assets=assets,
+        categories=categories,
+        vendors=vendors,
+        form=form
+    )
+
 
 @app.route("/admin/assets/add/", methods=["POST"])
 @admin_required
 def admin_add_asset():
     form = AssetForm()
     form.populate_categories()
+
     if not form.validate_on_submit():
         flash("Please fix the errors on the form.", "error")
         return redirect(url_for("admin_manage_assets"))
 
-    new_asset = Asset(
-        name=form.name.data,
-        serial_number=form.serial_number.data,
-        model_number=form.model_number.data,
-        make=form.make.data,
-        category_id=form.category_id.data,
-        quantity=form.quantity.data,
-        current_holder=form.current_holder.data,
-        vendor_id=form.vendor_id.data,
-        current_status=AssetStatus[form.current_status.data]
-    )
+    existing_asset = Asset.query.filter_by(serial_number=form.serial_number.data).first()
+    if existing_asset:
+        flash("An asset with this serial number already exists.", "error")
+        return redirect(url_for("admin_manage_assets"))
 
+    try:
+        new_asset = Asset(
+            name=form.name.data,
+            serial_number=form.serial_number.data,
+            model_number=form.model_number.data,
+            make=form.make.data,
+            category_id=form.category_id.data,
+            quantity=form.quantity.data,
+            current_holder=form.current_holder.data,
+            vendor_id=form.vendor_id.data,
+            current_status=AssetStatus[form.current_status.data]
+        )
 
-    if form.picture.data:
-        upload_folder = os.path.join(app.root_path, "static", "uploaded")
-        os.makedirs(upload_folder, exist_ok=True)
-        filename = secure_filename(form.picture.data.filename)
-        prefix = secrets.token_hex(8)
-        filename = f"{prefix}_{filename}"
-        file_path = os.path.join(upload_folder, filename)
-        form.picture.data.save(file_path)
-        new_asset.picture = filename
+        if form.picture.data:
+            upload_folder = os.path.join(app.root_path, "static", "uploaded")
+            os.makedirs(upload_folder, exist_ok=True)
+            filename = secure_filename(form.picture.data.filename)
+            prefix = secrets.token_hex(8)
+            filename = f"{prefix}_{filename}"
+            file_path = os.path.join(upload_folder, filename)
+            form.picture.data.save(file_path)
+            new_asset.picture = filename
 
-    db.session.add(new_asset)
-    db.session.commit()
-    flash("Asset added successfully", "success")
+        db.session.add(new_asset)
+        db.session.commit()
+        flash("Asset added successfully", "success")
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error adding asset: {str(e)}", "error")
+
     return redirect(url_for("admin_manage_assets"))
+
 
 @app.route("/admin/assets/delete/<int:asset_id>/", methods=["POST"])
 @admin_required
@@ -207,6 +264,7 @@ def admin_delete_asset(asset_id):
     db.session.commit()
     flash("Asset deleted", "success")
     return redirect(url_for("admin_manage_assets"))
+
 
 @app.route("/admin/assets/status/<int:asset_id>/", methods=["POST"])
 @admin_required

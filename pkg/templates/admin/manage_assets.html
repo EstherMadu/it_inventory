@@ -7,6 +7,40 @@
   <div class="small-note">Upload, update status, and view history</div>
 </div>
 
+<form method="GET" class="row g-2 mb-3">
+  <div class="col-md-3">
+    <select name="category" class="form-select">
+      <option value="">All Categories</option>
+      {% for c in categories %}
+        <option value="{{ c.id }}" {% if request.args.get('category') == c.id|string %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <select name="vendor" class="form-select">
+      <option value="">All Vendors</option>
+      {% for v in vendors %}
+        <option value="{{ v.id }}" {% if request.args.get('vendor') == v.id|string %}selected{% endif %}>{{ v.vendor_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <select name="status" class="form-select">
+      <option value="">All Statuses</option>
+      {% for s in ['INVENTORY', 'ASSIGNED', 'REPAIR', 'RETIRED'] %}
+        <option value="{{ s }}" {% if request.args.get('status') == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <button type="submit" class="btn btn-dark w-100">Filter</button>
+  </div>
+</form>
+
+
 <div class="row g-3">
   <div class="col-md-10">
     <div class="panel">

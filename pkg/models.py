@@ -38,7 +38,6 @@ class Asset(db.Model):
     vendor_id = db.Column(db.Integer, db.ForeignKey("vendors.id"))
     category_id = db.Column(db.Integer, db.ForeignKey("asset_categories.id"))
     current_status = db.Column(Enum(AssetStatus), default=AssetStatus.INVENTORY, nullable=False)
-    quantity = db.Column(db.String(256))
     current_holder = db.Column(db.String(128))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     assignments = db.relationship("AssetAssignment", backref="asset", lazy="dynamic")
